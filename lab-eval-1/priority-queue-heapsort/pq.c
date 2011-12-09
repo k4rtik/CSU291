@@ -1,0 +1,115 @@
+#include <stdio.h>
+#define LENGTH 9
+#define LEFT(i) (2*(i))
+#define RIGHT(i) (2*(i)+1)
+#define PARENT(i) ((i)/2)
+
+int heap_size=LENGTH;
+
+void swap(int A[], int i, int j) {
+	int temp = A[i];
+	A[i] = A[j];
+	A[j] = temp;
+}
+
+void heapify(int A[], int i) {
+	int smallest;
+	int l = LEFT(i);
+	int r = RIGHT(i);
+	if (l <= heap_size && A[i] > A[l])
+		smallest = l;
+	else smallest = i;
+	if (r <= heap_size && A[smallest] > A[r])
+		smallest = r;
+	if (smallest != i)
+	{
+		swap(A, i, smallest);
+		heapify(A, smallest);
+	}
+}
+
+void build_heap(int A[]) {
+	int i;
+	heap_size = LENGTH;
+	for (i = LENGTH/2; i > 0; i -= 1)
+	{
+		heapify(A, i);
+	}
+}
+
+void heapsort(int A[]){
+	build_heap(A);
+	int i;
+	for (i = LENGTH; i > 1; i -= 1)
+	{
+		swap(A, 1, i);
+		heap_size--;
+		heapify(A,1);
+	}
+}
+
+int extract_min(int A[]){
+	if (heap_size < 1)
+	{
+		printf("\nHeap underflow! Aborting extracting operation!\n");
+		return 0;
+	}
+	int min = A[1];
+	A[1] = A[heap_size--];
+	heapify(A, 1);
+	return min;
+}
+
+void decrease_key(int A[], int i, int key){
+	if (key > A[i])
+	{
+		printf("\nNew key is greater than the current key.\
+ Aborting the operation!\n");
+		return;
+	}
+	A[i] = key;
+	while (i > 1 && A[PARENT(i)] > A[i])
+	{
+		swap(A, i, PARENT(i));
+		i = PARENT(i);
+	}
+}
+
+int main()
+{
+	int arr[LENGTH];
+	int i;
+	for (i = 0; i < LENGTH; i += 1)
+		scanf("%d", &arr[i]);
+	
+// running heapsort(), build_heap() not required
+//	heapsort(arr);
+//	heap_size = LENGTH;
+
+// running decrease_key()
+	/*build_heap(arr);
+	for (i = 1; i <= heap_size; i += 1)
+		printf("%d ", arr[i]);
+	
+	printf("\n");
+	
+	decrease_key(arr, 4, 5);*/
+
+//running extract_min()
+	build_heap(arr);
+	for (i = 0; i < heap_size; i += 1)
+		printf("%d ", arr[i]);
+	
+	printf("\n");
+
+	printf("\nMin: %d\n", extract_min(arr));
+
+	printf("\nOutput starts here:\n===================\n");
+
+	for (i = 0; i < heap_size; i += 1)
+		printf("%d\n", arr[i]);
+
+	printf("\n");
+
+	return 0;
+}
